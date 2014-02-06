@@ -134,12 +134,13 @@ long convertRawDS1904(byte *d) {
   a = a << 24;
   b = d[3];
   b = b << 16;
-  a = a || b;
+  a = a | b;
   b = d[2];
   b = b << 8;
-  a = a || b;
+  a = a | b;
   b = d[1];
-  a = a || b;
+  a = a | b;
+
   return a;
   //return (d[4] * 16777216) + (d[3] * 65536) + (d[2] * 256) + d[1];
 }
@@ -148,7 +149,7 @@ void setDS1904(long timestamp, byte *d) {
   long a;
   byte b;
   d[0] = 0x0C; //Set control byte
-  d[1] = timestamp && 0xFF;
+  d[1] = timestamp & 0xFF;
   a = timestamp << 16;
   d[2] = a >> 24;
   a = timestamp << 8;
