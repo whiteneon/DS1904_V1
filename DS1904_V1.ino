@@ -12,7 +12,7 @@ OneWire  ds(2);  // on pin 10 (a 4.7K resistor is necessary)
 
 void setup(void) {
   Serial.begin(9600);
-  Keyboard.begin();
+  //Serial.printKeyboard.begin();
 }
 
 void loop(void) {
@@ -88,19 +88,19 @@ void loop(void) {
   //Serial.println(timestamp, DEC);
   arduinoTime = getArduinoTime();
   //Serial.println(arduinoTime);
-  Keyboard.println(timestamp);
-  Keyboard.println(arduinoTime);
+  Serial.println(timestamp);
+  Serial.println(arduinoTime);
   
-  Keyboard.println("------------------");
-  Keyboard.println("Current vals below");
+  Serial.println("------------------");
+  Serial.println("Current vals below");
   for( i = 0; i < 5; i++) {
-    Keyboard.println(data[i], HEX);
+    Serial.println(data[i], HEX);
   }
-  Keyboard.println("------------------");
-  Keyboard.println("Calcs below:");
+  Serial.println("------------------");
+  Serial.println("Calcs below:");
   setDS1904(timestamp, &data[0]);
   for( i = 0; i < 5; i++) {
-    Keyboard.println(data[i], HEX);
+    Serial.println(data[i], HEX);
   }
   delay(1000);
 }
@@ -130,16 +130,12 @@ String getArduinoTime() {
 
 long convertRawDS1904(byte *d) {
   long a, b;
-  a = d[4];
-  a = a << 24;
-  b = d[3];
-  b = b << 16;
+  a = d[4] << 24;
+  b = d[3] << 16;
   a = a | b;
-  b = d[2];
-  b = b << 8;
+  b = d[2] << 8;
   a = a | b;
-  b = d[1];
-  a = a | b;
+  a = a | d[1];
 
   return a;
   //return (d[4] * 16777216) + (d[3] * 65536) + (d[2] * 256) + d[1];
