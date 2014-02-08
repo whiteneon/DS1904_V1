@@ -98,7 +98,7 @@ void loop(void) {
   }
   Serial.println("------------------");
   Serial.println("Calcs below:");
-  setDS1904(timestamp, &data[0]);
+  //setDS1904(timestamp, &data[0]);
   for( i = 0; i < 5; i++) {
     Serial.println(data[i], HEX);
   }
