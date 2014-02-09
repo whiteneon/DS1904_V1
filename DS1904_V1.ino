@@ -76,32 +76,20 @@ void loop(void) {
   //Serial.print(" ");
   for ( i = 0; i < 5; i++) {           // we need 5 bytes
     data[i] = ds.read();
-    //Serial.print(data[i], HEX);
-    //Serial.print(" ");
+    Serial.print(data[i], HEX);
+    Serial.print(" ");
   }
   //Serial.println();
   //timestamp = data[4] << 24;
   //timestamp = data[4] * 16777216;
-  //timestamp = (data[4] * 16777216) + (data[3] * 65536) + (data[2] * 256) + data[1];
   timestamp = convertRawDS1904(&data[0]);
+  //timestamp = (data[4] * 16777216) + (data[3] * 65536) + (data[2] * 256) + data[1];
   setArduinoTime(timestamp);
   //Serial.println(timestamp, DEC);
   arduinoTime = getArduinoTime();
   //Serial.println(arduinoTime);
-  Serial.println(timestamp);
-  Serial.println(arduinoTime);
   
-  Serial.println("------------------");
-  Serial.println("Current vals below");
-  for( i = 0; i < 5; i++) {
-    Serial.println(data[i], HEX);
-  }
-  Serial.println("------------------");
-  Serial.println("Calcs below:");
-  //setDS1904(timestamp, &data[0]);
-  for( i = 0; i < 5; i++) {
-    Serial.println(data[i], HEX);
-  }
+  setDS1904(timestamp, &data[0]);
   delay(1000);
 }
 
@@ -130,13 +118,15 @@ String getArduinoTime() {
 
 long convertRawDS1904(byte *d) {
   long a, b;
-  a = d[4] << 24;
-  b = d[3] << 16;
+  a = d[4];
+  a = a << 24;
+  b = d[3];
+  b = b << 16;
   a = a | b;
-  b = d[2] << 8;
+  b = d[2];
+  b = b << 8;
   a = a | b;
   a = a | d[1];
-
   return a;
   //return (d[4] * 16777216) + (d[3] * 65536) + (d[2] * 256) + d[1];
 }
@@ -145,12 +135,12 @@ void setDS1904(long timestamp, byte *d) {
   long a;
   byte b;
   d[0] = 0x0C; //Set control byte
-  d[1] = timestamp & 0xFF;
-  a = timestamp << 16;
-  d[2] = a >> 24;
-  a = timestamp << 8;
-  d[3] = a >> 24;
-  d[4] = timestamp >> 24;
+  d[1] = timestamp & 0xFF; //LSB, DD
+  a = timestamp << 16; //LShift 2 Bytes, CC DD 00 00
+  d[2] = a >> 24; // RShift 3 Bytes 00 00 00 CC
+  a = timestamp << 8; //Lshift 1 Byte BB CC DD 00
+  d[3] = a >> 24; // RShift 3 Bytes 00 00 00 BB
+  d[4] = timestamp >> 24; //RShift 3 Bytes 00 00 00 AA
 }
 
 void printDigits(int digits){
