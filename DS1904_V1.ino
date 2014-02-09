@@ -76,8 +76,8 @@ void loop(void) {
   //Serial.print(" ");
   for ( i = 0; i < 5; i++) {           // we need 5 bytes
     data[i] = ds.read();
-    Serial.print(data[i], HEX);
-    Serial.print(" ");
+    //Serial.print(data[i], HEX);
+    //Serial.print(" ");
   }
   //Serial.println();
   //timestamp = data[4] << 24;
@@ -87,9 +87,9 @@ void loop(void) {
   setArduinoTime(timestamp);
   //Serial.println(timestamp, DEC);
   arduinoTime = getArduinoTime();
-  //Serial.println(arduinoTime);
+  Serial.println(arduinoTime);
   
-  setDS1904(timestamp, &data[0]);
+  //setDS1904(timestamp, &data[0]);
   delay(1000);
 }
 
